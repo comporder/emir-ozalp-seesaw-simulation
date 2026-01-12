@@ -38,7 +38,16 @@ h1 {
     transform: translateX(-50%);
 }
 
-/* temporary styling for weight elements */
+#plank-click-area {
+    position: absolute;
+    width: 400px;
+    height: 15px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
 .weight {
     position: absolute;
     top: 40%;

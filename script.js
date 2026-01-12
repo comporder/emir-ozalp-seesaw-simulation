@@ -1,10 +1,12 @@
 const seesaw = document.getElementById("seesaw");
-const scene = document.getElementById("scene");
 const plankClickArea = document.getElementById("plank-click-area");
 
-let totalWeightOnLeft = 0;
-let totalWeightOnRight = 0;
-const distanceFromPivot = 1;
+const MAX_ANGLE = 30;
+const MAX_TORQUE = 5000; // deneme / görsel eşik
+
+let totalLeftTorque = 0;
+let totalRightTorque = 0;
+
 
 function generateRandomWeight() {
     return Math.floor(Math.random() * 10 + 1);
@@ -18,34 +20,36 @@ function createWeightElement(weight) {
 }
 
 function calculateSeesawAngle() {
-    const leftTorque = totalWeightOnLeft * distanceFromPivot;
-    const rightTorque = totalWeightOnRight * distanceFromPivot;
+    const torqueDiff = totalRightTorque - totalLeftTorque;
 
-    if (leftTorque > rightTorque) {
-        return -30;
-    } else if (rightTorque > leftTorque) {
-        return 30;
-    } else {
-        return 0;
-    }
+    if (torqueDiff === 0) return 0;
+
+    const angleRatio = Math.max(
+        -1,
+        Math.min(1, torqueDiff / MAX_TORQUE)
+    );
+
+    return angleRatio * MAX_ANGLE;
 }
 
 plankClickArea.addEventListener("click", function (event) {
     const clickAreaBounds = plankClickArea.getBoundingClientRect();
     const clickX = event.clientX;
-    const positionOnPlank  = clickX - clickAreaBounds.left;
+    const positionOnPlank = clickX - clickAreaBounds.left;
+    const plankCenter = clickAreaBounds.width / 2;
+    const distanceFromCenter = Math.abs(positionOnPlank - plankCenter);
 
     const weight = generateRandomWeight();
     const weightElement = createWeightElement(weight);
 
     weightElement.style.position = "absolute";
-    weightElement.style.left = `${positionOnPlank  - 15}px`;
+    weightElement.style.left = `${positionOnPlank - 15}px`;
     weightElement.style.top = "-35px";
 
-    if (positionOnPlank < clickAreaBounds.width / 2) {
-        totalWeightOnLeft += weight;
+    if (positionOnPlank < plankCenter) {
+        totalLeftTorque += weight * distanceFromCenter;
     } else {
-        totalWeightOnRight += weight;
+        totalRightTorque += weight * distanceFromCenter;
     }
 
     seesaw.appendChild(weightElement);

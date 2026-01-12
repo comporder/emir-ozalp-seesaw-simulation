@@ -31,21 +31,24 @@ function calculateSeesawAngle() {
 seesaw.addEventListener("click", function (event) {
     const seesawBounds = seesaw.getBoundingClientRect();
     const seesawCenter = seesawBounds.left + seesawBounds.width / 2;
+    const clickX = event.clientX;
+    const positionOnSeesaw  = clickX - seesawBounds.left;
     const weight = generateRandomWeight();
     const weightElement = createWeightElement(weight);
 
+    weightElement.style.position = "absolute";
+    weightElement.style.left = `${positionOnSeesaw  - 15}px`;
+    weightElement.style.top = "-35px"; // seesaw'ın üstü
+
     if (event.clientX < seesawCenter) {
         totalWeightOnLeft += weight;
-        weightElement.style.left = "30%";
-
         console.log("Total weight on left:", totalWeightOnLeft);
     } else {
         totalWeightOnRight += weight;
-        weightElement.style.left = "70%";
         console.log("Total weight on right:", totalWeightOnRight);
     }
 
-    scene.appendChild(weightElement);
+    seesaw.appendChild(weightElement);
 
     const angle = calculateSeesawAngle();
     seesaw.style.transform = `rotate(${angle}deg)`;

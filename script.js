@@ -1,5 +1,7 @@
 const seesaw = document.getElementById("seesaw");
 const scene = document.getElementById("scene");
+const plankClickArea = document.getElementById("plank-click-area");
+
 let totalWeightOnLeft = 0;
 let totalWeightOnRight = 0;
 const distanceFromPivot = 1;
@@ -28,11 +30,11 @@ function calculateSeesawAngle() {
     }
 }
 
-seesaw.addEventListener("click", function (event) {
+plankClickArea.addEventListener("click", function (event) {
     const seesawBounds = seesaw.getBoundingClientRect();
-    const seesawCenter = seesawBounds.left + seesawBounds.width / 2;
     const clickX = event.clientX;
     const positionOnSeesaw  = clickX - seesawBounds.left;
+
     const weight = generateRandomWeight();
     const weightElement = createWeightElement(weight);
 
@@ -40,12 +42,12 @@ seesaw.addEventListener("click", function (event) {
     weightElement.style.left = `${positionOnSeesaw  - 15}px`;
     weightElement.style.top = "-35px"; // seesaw'ın üstü
 
-    if (event.clientX < seesawCenter) {
+    console.log(seesawBounds.width / 2);
+
+    if (positionOnSeesaw < seesawBounds.width / 2) {
         totalWeightOnLeft += weight;
-        console.log("Total weight on left:", totalWeightOnLeft);
     } else {
         totalWeightOnRight += weight;
-        console.log("Total weight on right:", totalWeightOnRight);
     }
 
     seesaw.appendChild(weightElement);

@@ -31,20 +31,18 @@ function calculateSeesawAngle() {
 }
 
 plankClickArea.addEventListener("click", function (event) {
-    const seesawBounds = seesaw.getBoundingClientRect();
+    const clickAreaBounds = plankClickArea.getBoundingClientRect();
     const clickX = event.clientX;
-    const positionOnSeesaw  = clickX - seesawBounds.left;
+    const positionOnPlank  = clickX - clickAreaBounds.left;
 
     const weight = generateRandomWeight();
     const weightElement = createWeightElement(weight);
 
     weightElement.style.position = "absolute";
-    weightElement.style.left = `${positionOnSeesaw  - 15}px`;
-    weightElement.style.top = "-35px"; // seesaw'ın üstü
+    weightElement.style.left = `${positionOnPlank  - 15}px`;
+    weightElement.style.top = "-35px";
 
-    console.log(seesawBounds.width / 2);
-
-    if (positionOnSeesaw < seesawBounds.width / 2) {
+    if (positionOnPlank < clickAreaBounds.width / 2) {
         totalWeightOnLeft += weight;
     } else {
         totalWeightOnRight += weight;

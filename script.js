@@ -92,9 +92,9 @@ function resetSeesaw() {
     localStorage.removeItem("seesawNextWeight");
     const weightElements = seesaw.querySelectorAll(".weight");
     weightElements.forEach(box => box.remove());
-    seesaw.style.transform = "rotate(0deg)";
+    seesaw.style.transform = "translate(-50%, -50%) rotate(0deg)";
     nextWeight = generateRandomWeight();
-    
+
     updateInfoPanel();
 }
 
@@ -120,7 +120,7 @@ function restoreState() {
     });
 
     const angle = calculateSeesawAngle();
-    seesaw.style.transform = `rotate(${angle}deg)`;
+    seesaw.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
 
     nextWeight = Number(savedNextWeight) || generateRandomWeight();
     updateInfoPanel();
@@ -160,7 +160,7 @@ plankClickArea.addEventListener("click", function (event) {
     seesaw.appendChild(weightElement);
 
     const angle = calculateSeesawAngle();
-    seesaw.style.transform = `rotate(${angle}deg)`;
+    seesaw.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
     updateInfoPanel();
 });
 

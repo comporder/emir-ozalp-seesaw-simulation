@@ -156,10 +156,9 @@ function restoreState() {
 resetButton.addEventListener("click", resetSeesaw);
 
 plankClickArea.addEventListener("click", function (event) {
-    const clickAreaBounds = plankClickArea.getBoundingClientRect();
-    const clickX = event.clientX;
-    const positionOnPlank = clickX - clickAreaBounds.left;
-    const plankCenter = clickAreaBounds.width / 2;
+    const positionOnPlank = event.offsetX;
+    const plankWidth = plankClickArea.offsetWidth;
+    const plankCenter = plankWidth / 2;
     const distanceFromCenter = Math.abs(positionOnPlank - plankCenter);
 
     const weight = nextWeight;

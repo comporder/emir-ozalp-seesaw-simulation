@@ -6,7 +6,7 @@ const rightWeightEl = document.getElementById("right-weight");
 const rightTorqueEl = document.getElementById("right-torque");
 const nextWeightEl = document.getElementById("next-weight");
 const tiltAngleEl = document.getElementById("tilt-angle");
-
+const resetButton = document.getElementById("reset-button");
 
 const MAX_ANGLE = 30;
 const MAX_TORQUE = 5000; // deneme / görsel eşik
@@ -86,6 +86,16 @@ function updateInfoPanel() {
     nextWeightEl.textContent = nextWeight;
 }
 
+function resetSeesaw() {
+    weights.length = 0;
+    const weightElements = seesaw.querySelectorAll(".weight");
+    weightElements.forEach(box => box.remove());
+    seesaw.style.transform = "rotate(0deg)";
+    nextWeight = generateRandomWeight();
+    updateInfoPanel();
+}
+
+resetButton.addEventListener("click", resetSeesaw);
 
 plankClickArea.addEventListener("click", function (event) {
     const clickAreaBounds = plankClickArea.getBoundingClientRect();

@@ -60,6 +60,20 @@ h1 {
     padding: 0;
 }
 
+#controls {
+    position: fixed;
+    top: 150px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#reset-button {
+    padding: 6px 14px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+
 .info-item {
     background: #fff;
     border: 1px solid #ddd;

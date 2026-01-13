@@ -48,6 +48,21 @@ h1 {
     transform: translate(-50%, -50%);
 }
 
+#info-panel {
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 10px 14px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+#info-panel span {
+    font-weight: bold;
+}
+
 .weight {
     position: absolute;
     top: 40%;

@@ -1,10 +1,18 @@
 const seesaw = document.getElementById("seesaw");
 const plankClickArea = document.getElementById("plank-click-area");
+const leftWeightEl = document.getElementById("left-weight");
+const leftTorqueEl = document.getElementById("left-torque");
+const rightWeightEl = document.getElementById("right-weight");
+const rightTorqueEl = document.getElementById("right-torque");
+const nextWeightEl = document.getElementById("next-weight");
+const tiltAngleEl = document.getElementById("tilt-angle");
+
 
 const MAX_ANGLE = 30;
 const MAX_TORQUE = 5000; // deneme / görsel eşik
 const weights = [];
 
+let nextWeight = generateRandomWeight();
 
 function generateRandomWeight() {
     return Math.floor(Math.random() * 10 + 1);
@@ -34,6 +42,22 @@ function calculateTotalTorque() {
     return { leftTorque, rightTorque };
 }
 
+function calculateTotalWeight() {
+    let leftWeight = 0;
+    let rightWeight = 0;
+
+    weights.forEach(item => {
+        if (item.side === "left") {
+            leftWeight += item.value;
+        } else {
+            rightWeight += item.value;
+        }
+    });
+
+    return { leftWeight, rightWeight };
+}
+
+
 
 function calculateSeesawAngle() {
     const { leftTorque, rightTorque } = calculateTotalTorque();
@@ -49,6 +73,20 @@ function calculateSeesawAngle() {
     return angleRatio * MAX_ANGLE;
 }
 
+function updateInfoPanel() {
+    const { leftTorque, rightTorque } = calculateTotalTorque();
+    const { leftWeight, rightWeight } = calculateTotalWeight();
+    const angle = calculateSeesawAngle();
+
+    leftWeightEl.textContent = leftWeight;
+    rightWeightEl.textContent = rightWeight;
+    leftTorqueEl.textContent = Math.round(leftTorque);
+    rightTorqueEl.textContent = Math.round(rightTorque);
+    tiltAngleEl.textContent = angle.toFixed(1);
+    nextWeightEl.textContent = nextWeight;
+}
+
+
 plankClickArea.addEventListener("click", function (event) {
     const clickAreaBounds = plankClickArea.getBoundingClientRect();
     const clickX = event.clientX;
@@ -56,7 +94,8 @@ plankClickArea.addEventListener("click", function (event) {
     const plankCenter = clickAreaBounds.width / 2;
     const distanceFromCenter = Math.abs(positionOnPlank - plankCenter);
 
-    const weight = generateRandomWeight();
+    const weight = nextWeight;
+    nextWeight = generateRandomWeight();
     const weightElement = createWeightElement(weight);
     const side = positionOnPlank < plankCenter ? "left" : "right";
 
@@ -76,7 +115,10 @@ plankClickArea.addEventListener("click", function (event) {
 
     const angle = calculateSeesawAngle();
     seesaw.style.transform = `rotate(${angle}deg)`;
+    updateInfoPanel();
 });
+
+updateInfoPanel();
 
 
 

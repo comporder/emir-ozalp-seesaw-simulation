@@ -106,7 +106,6 @@ h1 {
 
 .weight {
     position: absolute;
-    top: 40%;
     width: 30px;
     height: 30px;
     background-color: orange;
@@ -117,4 +116,6 @@ h1 {
     font-size: 14px;
     border: 2px solid #000;
     border-radius: 4px;
+    font-weight: bold;
+    transition: top 0.4s ease-out;
 }

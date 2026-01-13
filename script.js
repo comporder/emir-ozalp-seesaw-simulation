@@ -145,7 +145,7 @@ plankClickArea.addEventListener("click", function (event) {
 
     weightElement.style.position = "absolute";
     weightElement.style.left = `${positionOnPlank - 15}px`;
-    weightElement.style.top = "-35px";
+    weightElement.style.top = "-150px";
 
     weights.push({
         value: weight,
@@ -158,6 +158,9 @@ plankClickArea.addEventListener("click", function (event) {
     saveState();
 
     seesaw.appendChild(weightElement);
+    requestAnimationFrame(() => {
+        weightElement.style.top = "-35px";
+    });
 
     const angle = calculateSeesawAngle();
     seesaw.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;

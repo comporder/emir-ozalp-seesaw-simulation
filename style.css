@@ -51,17 +51,36 @@ h1 {
 #info-panel {
     position: fixed;
     top: 80px;
-    left: 20px;
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 10px 14px;
-    font-size: 14px;
-    line-height: 1.6;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    background: transparent;
+    border: none;
+    padding: 0;
 }
 
-#info-panel span {
-    font-weight: bold;
+.info-item {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px 14px;
+    min-width: 110px;
+    text-align: center;
 }
+
+.info-item .label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.info-item .value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
 
 .weight {
     position: absolute;

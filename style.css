@@ -118,4 +118,5 @@ h1 {
     border-radius: 4px;
     font-weight: bold;
     transition: top 0.4s ease-out;
+    transform-origin: bottom center;
 }

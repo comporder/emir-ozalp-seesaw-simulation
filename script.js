@@ -57,6 +57,26 @@ function calculateTotalWeight() {
     return { leftWeight, rightWeight };
 }
 
+function getBoxSize(weight) {
+    return 0.5 + weight * 0.1;
+}
+
+const weightColors = {
+    1: "lightblue",
+    2: "deepskyblue",
+    3: "limegreen",
+    4: "green",
+    5: "yellow",
+    6: "orange",
+    7: "darkorange",
+    8: "red",
+    9: "darkred",
+    10: "purple"
+};
+
+function getColorByWeight(weight) {
+    return weightColors[weight] || "gray";
+}
 
 
 function calculateSeesawAngle() {
@@ -142,10 +162,15 @@ plankClickArea.addEventListener("click", function (event) {
     const weightElement = createWeightElement(weight);
     const side = positionOnPlank < plankCenter ? "left" : "right";
 
+    const boxSize = getBoxSize(weight);
+    const boxColor= getColorByWeight(weight);
+    
 
     weightElement.style.position = "absolute";
     weightElement.style.left = `${positionOnPlank - 15}px`;
     weightElement.style.top = "-150px";
+    weightElement.style.transform = `scale(${boxSize})`;
+    weightElement.style.backgroundColor = boxColor;
 
     weights.push({
         value: weight,

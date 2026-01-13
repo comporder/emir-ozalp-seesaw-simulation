@@ -3,9 +3,7 @@ const plankClickArea = document.getElementById("plank-click-area");
 
 const MAX_ANGLE = 30;
 const MAX_TORQUE = 5000; // deneme / görsel eşik
-
-let totalLeftTorque = 0;
-let totalRightTorque = 0;
+const weights = [];
 
 
 function generateRandomWeight() {
@@ -19,8 +17,27 @@ function createWeightElement(weight) {
     return weightElement;
 }
 
+function calculateTotalTorque() {
+    let leftTorque = 0;
+    let rightTorque = 0;
+
+    weights.forEach((item) => {
+        const torque = item.value * item.distanceFromCenter;
+
+        if (item.side === "left") {
+            leftTorque += torque;
+        } else {
+            rightTorque += torque;
+        }
+    });
+
+    return { leftTorque, rightTorque };
+}
+
+
 function calculateSeesawAngle() {
-    const torqueDiff = totalRightTorque - totalLeftTorque;
+    const { leftTorque, rightTorque } = calculateTotalTorque();
+    const torqueDiff = rightTorque - leftTorque;
 
     if (torqueDiff === 0) return 0;
 
@@ -41,16 +58,19 @@ plankClickArea.addEventListener("click", function (event) {
 
     const weight = generateRandomWeight();
     const weightElement = createWeightElement(weight);
+    const side = positionOnPlank < plankCenter ? "left" : "right";
+
 
     weightElement.style.position = "absolute";
     weightElement.style.left = `${positionOnPlank - 15}px`;
     weightElement.style.top = "-35px";
 
-    if (positionOnPlank < plankCenter) {
-        totalLeftTorque += weight * distanceFromCenter;
-    } else {
-        totalRightTorque += weight * distanceFromCenter;
-    }
+    weights.push({
+        value: weight,
+        distanceFromCenter,
+        side,
+        element: weightElement
+    });
 
     seesaw.appendChild(weightElement);
 

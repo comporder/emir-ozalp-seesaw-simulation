@@ -132,8 +132,13 @@ function restoreState() {
     const parsedWeights = JSON.parse(savedWeights);
     parsedWeights.forEach(box => {
         const weightElement = createWeightElement(box.value);
+        const boxSize = getBoxSize(box.value);
+        const boxColor = getColorByWeight(box.value);
+
         weightElement.style.left = `${box.positionOnPlank - 15}px`;
         weightElement.style.top = "-35px";
+        weightElement.style.transform = `scale(${boxSize})`;
+        weightElement.style.backgroundColor = boxColor;
 
         weights.push({ ...box, element: weightElement });
         seesaw.appendChild(weightElement);
@@ -163,8 +168,8 @@ plankClickArea.addEventListener("click", function (event) {
     const side = positionOnPlank < plankCenter ? "left" : "right";
 
     const boxSize = getBoxSize(weight);
-    const boxColor= getColorByWeight(weight);
-    
+    const boxColor = getColorByWeight(weight);
+
 
     weightElement.style.position = "absolute";
     weightElement.style.left = `${positionOnPlank - 15}px`;

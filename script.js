@@ -21,6 +21,8 @@ function createWeightElement(weight) {
     const weightElement = document.createElement("div");
     weightElement.className = "weight";
     weightElement.textContent = weight;
+    weightElement.style.position = "absolute";
+    weightElement.style.backgroundColor = getColorByWeight(weight);
     return weightElement;
 }
 
@@ -57,7 +59,7 @@ function calculateTotalWeight() {
 }
 
 function getBoxSize(weight) {
-    return 0.5 + weight * 0.1;
+    return 16 + weight * 2.4;
 }
 
 const weightColors = {
@@ -111,7 +113,6 @@ function resetSeesaw() {
     weightElements.forEach(box => box.remove());
     seesaw.style.transform = "translate(-50%, -50%) rotate(0deg)";
     nextWeight = generateRandomWeight();
-
     updateInfoPanel();
 }
 
@@ -130,15 +131,15 @@ function restoreState() {
     parsedWeights.forEach(box => {
         const weightElement = createWeightElement(box.value);
         const boxSize = getBoxSize(box.value);
-        const boxColor = getColorByWeight(box.value);
+        weightElement.style.width = `${boxSize}px`;
+        weightElement.style.height = `${boxSize}px`;
+        weightElement.style.left = `${box.positionOnPlank - boxSize / 2}px`;
+        weightElement.style.top = `-${boxSize}px`;
+        weightElement.style.backgroundColor = getColorByWeight(box.value);
 
-        weightElement.style.left = `${box.positionOnPlank - 15}px`;
-        weightElement.style.top = "-35px";
-        weightElement.style.transform = `scale(${boxSize})`;
-        weightElement.style.backgroundColor = boxColor;
-
-        weights.push({ ...box, element: weightElement });
         seesaw.appendChild(weightElement);
+        weights.push({ ...box, element: weightElement });
+
     });
 
     const angle = calculateSeesawAngle();
@@ -148,14 +149,11 @@ function restoreState() {
     updateInfoPanel();
 }
 
-
-
 resetButton.addEventListener("click", resetSeesaw);
 
 plankClickArea.addEventListener("click", function (event) {
     const positionOnPlank = event.offsetX;
-    const plankWidth = plankClickArea.offsetWidth;
-    const plankCenter = plankWidth / 2;
+    const plankCenter = plankClickArea.offsetWidth / 2;
     const distanceFromCenter = Math.abs(positionOnPlank - plankCenter);
 
     const weight = nextWeight;
@@ -164,14 +162,13 @@ plankClickArea.addEventListener("click", function (event) {
     const side = positionOnPlank < plankCenter ? "left" : "right";
 
     const boxSize = getBoxSize(weight);
-    const boxColor = getColorByWeight(weight);
 
+    weightElement.style.width = `${boxSize}px`;
+    weightElement.style.height = `${boxSize}px`;
+    weightElement.style.left = `${positionOnPlank - boxSize / 2}px`;
+    weightElement.style.top = `-${boxSize * 3}px`;
 
-    weightElement.style.position = "absolute";
-    weightElement.style.left = `${positionOnPlank - 15}px`;
-    weightElement.style.top = "-150px";
-    weightElement.style.transform = `scale(${boxSize})`;
-    weightElement.style.backgroundColor = boxColor;
+    seesaw.appendChild(weightElement);
 
     weights.push({
         value: weight,
@@ -183,19 +180,13 @@ plankClickArea.addEventListener("click", function (event) {
 
     saveState();
 
-    seesaw.appendChild(weightElement);
     requestAnimationFrame(() => {
-        weightElement.style.top = "-35px";
+        weightElement.style.top = `-${boxSize}px`;
     });
 
-    const angle = calculateSeesawAngle();
-    seesaw.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+    seesaw.style.transform = `translate(-50%, -50%) rotate(${calculateSeesawAngle()}deg)`;
     updateInfoPanel();
 });
 
 restoreState();
 updateInfoPanel();
-
-
-
-

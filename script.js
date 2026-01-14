@@ -9,7 +9,6 @@ const tiltAngleEl = document.getElementById("tilt-angle");
 const resetButton = document.getElementById("reset-button");
 
 const MAX_ANGLE = 30;
-const MAX_TORQUE = 5000; // deneme / görsel eşik
 const weights = [];
 
 let nextWeight = generateRandomWeight();
@@ -85,12 +84,10 @@ function calculateSeesawAngle() {
 
     if (torqueDiff === 0) return 0;
 
-    const angleRatio = Math.max(
-        -1,
-        Math.min(1, torqueDiff / MAX_TORQUE)
-    );
+    // Visual scaling for smoother rotation (based on task example)
+    const angle = Math.max(-MAX_ANGLE, Math.min(MAX_ANGLE, (torqueDiff / 10)));
 
-    return angleRatio * MAX_ANGLE;
+    return angle;
 }
 
 function updateInfoPanel() {

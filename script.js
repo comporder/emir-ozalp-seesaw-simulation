@@ -22,7 +22,6 @@ function createWeightElement(weight) {
     weightElement.className = "weight";
     weightElement.textContent = weight;
     weightElement.style.position = "absolute";
-
     return weightElement;
 }
 
@@ -36,38 +35,24 @@ function styleWeightBox(weightElement, weight, positionOnPlank, dropFromTop = fa
     weightElement.style.backgroundColor = getColorByWeight(weight);
 }
 
-function calculateTotalTorque() {
-    let leftTorque = 0;
-    let rightTorque = 0;
+function calculateTotals() {
+    let leftWeight = 0, rightWeight = 0;
+    let leftTorque = 0, rightTorque = 0;
 
-    weights.forEach((item) => {
-        const torque = item.value * item.distanceFromCenter;
-
-        if (item.side === "left") {
-            leftTorque += torque;
+    weights.forEach(weight => {
+        if (weight.side === "left") {
+            leftWeight += weight.value;
+            leftTorque += weight.value * weight.distanceFromCenter;
         } else {
-            rightTorque += torque;
+            rightWeight += weight.value;
+            rightTorque += weight.value * weight.distanceFromCenter;
         }
     });
 
-    return { leftTorque, rightTorque };
+    return { leftWeight, rightWeight, leftTorque, rightTorque };
 }
 
-function calculateTotalWeight() {
-    let leftWeight = 0;
-    let rightWeight = 0;
-
-    weights.forEach(item => {
-        if (item.side === "left") {
-            leftWeight += item.value;
-        } else {
-            rightWeight += item.value;
-        }
-    });
-
-    return { leftWeight, rightWeight };
-}
-
+// tweaked this a bit by eye until the sizes looked reasonable
 function getBoxSize(weight) {
     return 16 + weight * 2.4;
 }
@@ -89,23 +74,19 @@ function getColorByWeight(weight) {
     return weightColors[weight] || "gray";
 }
 
-
-function calculateSeesawAngle() {
-    const { leftTorque, rightTorque } = calculateTotalTorque();
+function calculateSeesawAngle(leftTorque, rightTorque) {
     const torqueDiff = rightTorque - leftTorque;
 
     if (torqueDiff === 0) return 0;
 
-    // Visual scaling for smoother rotation (based on task example)
     const angle = Math.max(-MAX_ANGLE, Math.min(MAX_ANGLE, (torqueDiff / 10)));
 
     return angle;
 }
 
 function updateInfoPanel() {
-    const { leftTorque, rightTorque } = calculateTotalTorque();
-    const { leftWeight, rightWeight } = calculateTotalWeight();
-    const angle = calculateSeesawAngle();
+    const { leftWeight, rightWeight, leftTorque, rightTorque } = calculateTotals();
+    const angle = calculateSeesawAngle(leftTorque, rightTorque);
 
     leftWeightEl.textContent = leftWeight;
     rightWeightEl.textContent = rightWeight;
@@ -145,7 +126,8 @@ function restoreState() {
         weights.push(box);
     });
 
-    const angle = calculateSeesawAngle();
+    const { leftTorque, rightTorque } = calculateTotals();
+    const angle = calculateSeesawAngle(leftTorque, rightTorque);
     seesaw.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
 
     nextWeight = Number(savedNextWeight) || generateRandomWeight();
@@ -155,6 +137,7 @@ function restoreState() {
 resetButton.addEventListener("click", resetSeesaw);
 
 plankClickArea.addEventListener("click", function (event) {
+    // determine position relative to plank center, offsetX gives position within the clicked element
     const positionOnPlank = event.offsetX;
     const plankCenter = plankClickArea.offsetWidth / 2;
     const distanceFromCenter = Math.abs(positionOnPlank - plankCenter);
@@ -168,6 +151,7 @@ plankClickArea.addEventListener("click", function (event) {
     styleWeightBox(weightElement, weight, positionOnPlank, true);
     seesaw.appendChild(weightElement);
 
+    // store weight info for state management
     weights.push({
         value: weight,
         distanceFromCenter,
@@ -177,11 +161,14 @@ plankClickArea.addEventListener("click", function (event) {
 
     saveState();
 
+    // animate dropping the weight onto the plank
     requestAnimationFrame(() => {
         weightElement.style.top = `-${boxSize}px`;
     });
 
-    seesaw.style.transform = `translate(-50%, -50%) rotate(${calculateSeesawAngle()}deg)`;
+    const { leftTorque, rightTorque } = calculateTotals();
+    const angle = calculateSeesawAngle(leftTorque, rightTorque);
+    seesaw.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
     updateInfoPanel();
 });
 

@@ -105,6 +105,7 @@ function resetSeesaw() {
     seesaw.style.transform = "translate(-50%, -50%) rotate(0deg)";
     nextWeight = generateRandomWeight();
     updateInfoPanel();
+    saveState();
 }
 
 function saveState() {
